@@ -1,6 +1,6 @@
 language: nodejs
 node_js:
-- "node"
+- "10.3.0"
 before_script:
 - yarn
 script:
