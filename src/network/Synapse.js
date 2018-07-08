@@ -6,7 +6,7 @@ export default class Synapse extends React.Component {
     render() {
         let input = (this.props.inputNeuronIdx - (this.props.inputCount - 1) / 2) * 180;
         let output = (this.props.outputNeuronIdx - (this.props.outputCount - 1) / 2) * 180;
-        let colorCode = Math.floor(256 * this.props.weight).toString(16).padStart(2, "0");
+        let colorCode = Math.floor(256 * this.props.activation).toString(16).padStart(2, "0");
         return (
             <div className="Synapse" style={{
                 "marginTop": `${input}px`,
@@ -24,5 +24,6 @@ Synapse.propTypes = {
     "outputNeuronIdx": PropTypes.number.isRequired,
     "outputCount": PropTypes.number.isRequired,
     "weight": PropTypes.number.isRequired,
+    "activation": PropTypes.number.isRequired,
     "onMouseDown": PropTypes.func
 };

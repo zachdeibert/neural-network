@@ -13,6 +13,7 @@ export default class Layer extends React.Component {
                         {this.props.weights.map((arr, idx1) => arr.map((weight, idx2) => (
                             <Synapse key={`synapse-${idx1}-${idx2}`} inputNeuronIdx={idx2} inputCount={arr.length}
                                 outputNeuronIdx={idx1} outputCount={this.props.weights.length} weight={weight}
+                                activation={this.props.weightActivations[idx1][idx2]}
                                 onMouseDown={this.props.onSynapseMouseDown && this.props.onSynapseMouseDown.bind(this.props, idx1, idx2)} />
                         )))}
                     </div>
@@ -33,6 +34,7 @@ export default class Layer extends React.Component {
 Layer.propTypes = {
     "activations": PropTypes.arrayOf(PropTypes.number).isRequired,
     "weights": PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+    "weightActivations": PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
     "biases": PropTypes.arrayOf(PropTypes.number),
     "onNeuronMouseDown": PropTypes.func,
     "onSynapseMouseDown": PropTypes.func
