@@ -37,7 +37,7 @@ class DimensionBox extends React.Component {
     }
 }
 DimensionBox.propTypes = {
-    "value": PropTypes.number,
+    "value": PropTypes.number.isRequired,
     "onChange": PropTypes.func,
     "onRemove": PropTypes.func
 };
@@ -45,38 +45,35 @@ DimensionBox.propTypes = {
 export default class ShapeControl extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            "dimensions": [ 2, 3, 2 ]
-        };
         this.handleDimensionAdded = this.handleDimensionAdded.bind(this);
         this.handleWheel = this.handleWheel.bind(this);
     }
 
     handleDimensionChange(dimension, value) {
-        let dims = this.state.dimensions.slice();
-        dims[dimension] = value;
-        this.setState({
-            "dimensions": dims
-        });
+        if (this.props.onReshape) {
+            let dims = this.props.shape.slice();
+            dims[dimension] = value;
+            this.props.onReshape(dims);
+        }
     }
 
     handleDimensionAdded(val) {
-        if (typeof(val) !== "number") {
-            val = 1;
+        if (this.props.onReshape) {
+            if (typeof(val) !== "number") {
+                val = 1;
+            }
+            let dims = this.props.shape.slice();
+            dims.push(val);
+            this.props.onReshape(dims);
         }
-        let dims = this.state.dimensions.slice();
-        dims.push(val);
-        this.setState({
-            "dimensions": dims
-        });
     }
 
     handleDimensionRemoved(dimension) {
-        let dims = this.state.dimensions.slice();
-        dims.splice(dimension, 1);
-        this.setState({
-            "dimensions": dims
-        });
+        if (this.props.onReshape) {
+            let dims = this.props.shape.slice();
+            dims.splice(dimension, 1);
+            this.props.onReshape(dims);
+        }
     }
 
     handleWheel(ev) {
@@ -89,7 +86,7 @@ export default class ShapeControl extends React.Component {
             <div className="ShapeControl">
                 <label>Shape:</label>
                 <div className="dimensions" onWheel={this.handleWheel} ref={el => this.dimContainer = el}>
-                    {this.state.dimensions.map((size, idx) => (
+                    {this.props.shape.map((size, idx) => (
                         <DimensionBox key={`dimension-${idx}`} value={size}
                             onChange={this.handleDimensionChange.bind(this, idx)}
                             onRemove={this.handleDimensionRemoved.bind(this, idx)} />
@@ -102,3 +99,10 @@ export default class ShapeControl extends React.Component {
         );
     }
 }
+ShapeControl.propTypes = {
+    "shape": PropTypes.arrayOf(PropTypes.number),
+    "onReshape": PropTypes.func
+};
+ShapeControl.defaultProps = {
+    "shape": [ 2, 3, 2 ]
+};

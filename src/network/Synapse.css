@@ -1,0 +1,8 @@
+.Synapse {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 5px;
+    border: 1px solid #FFFFFF;
+    transform-origin: 0 0;
+}
