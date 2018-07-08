@@ -13,7 +13,7 @@ export default class Synapse extends React.Component {
                 "transform": `rotate(${Math.atan2(output - input, 120)}rad)`,
                 "width": `${Math.sqrt(Math.pow(output - input, 2) + 14400)}px`,
                 "backgroundColor": `#${colorCode}${colorCode}${colorCode}`
-            }}>
+            }} onMouseDown={this.props.onMouseDown}>
             </div>
         );
     }
@@ -23,5 +23,6 @@ Synapse.propTypes = {
     "inputCount": PropTypes.number.isRequired,
     "outputNeuronIdx": PropTypes.number.isRequired,
     "outputCount": PropTypes.number.isRequired,
-    "weight": PropTypes.number.isRequired
+    "weight": PropTypes.number.isRequired,
+    "onMouseDown": PropTypes.func
 };

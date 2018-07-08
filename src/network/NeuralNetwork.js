@@ -22,9 +22,14 @@ export default class NeuralNetwork extends React.Component {
                     "weights": [ [ Math.random(), Math.random(), Math.random() ], [ Math.random(), Math.random(), Math.random() ] ],
                     "biases": [ Math.random(), Math.random() ]
                 }
-            ]
+            ],
+            "downType": null,
+            "downIdx": null
         };
         this.forwardPropagate(this.state.layers);
+        this.handleInputMouseDown = this.handleInputMouseDown.bind(this);
+        this.handleMouseUp = this.handleMouseUp.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
     }
 
     forwardPropagate(layers) {
@@ -115,13 +120,78 @@ export default class NeuralNetwork extends React.Component {
         }
     }
 
+    updateDragValue(diff) {
+        let layers = this.state.layers.slice();
+        switch (this.state.downType) {
+            case "input":
+                layers[0].activations = layers[0].activations.slice();
+                layers[0].activations[this.state.downIdx] += diff;
+                if (layers[0].activations[this.state.downIdx] > 1) {
+                    layers[0].activations[this.state.downIdx] = 1;
+                } else if (layers[0].activations[this.state.downIdx] < 0) {
+                    layers[0].activations[this.state.downIdx] = 0;
+                }
+                break;
+            case "bias":
+                layers[this.state.downIdx[0]].biases = layers[this.state.downIdx[0]].biases.slice();
+                layers[this.state.downIdx[0]].biases[this.state.downIdx[1]] = diff;
+                break;
+            case "synapse":
+                let weights = layers[this.state.downIdx[0]].weights = layers[this.state.downIdx[0]].weights.slice();
+                weights = weights[this.state.downIdx[1]] = weights[this.state.downIdx[1]].slice();
+                weights[this.state.downIdx[2]] = diff;
+                break;
+            default:
+                return;
+        }
+        this.setState({
+            "layers": layers
+        });
+    }
+
+    handleInputMouseDown(idx, ev) {
+        this.setState({
+            "downType": "input",
+            "downIdx": idx
+        });
+    }
+
+    handleBiasMouseDown(layerIdx, neuronIdx, ev) {
+        this.setState({
+            "downType": "bias",
+            "downIdx": [ layerIdx, neuronIdx ]
+        });
+    }
+
+    handleSynapseMouseDown(layerIdx, neuronIdx1, neuronIdx2, ev) {
+        this.setState({
+            "downType": "synapse",
+            "downIdx": [ layerIdx, neuronIdx1, neuronIdx2 ]
+        });
+    }
+
+    handleMouseUp(ev) {
+        this.setState({
+            "downType": null,
+            "downIdx": null
+        });
+    }
+
+    handleMouseMove(ev) {
+        if (this.state.downType) {
+            this.updateDragValue(ev.movementY / 100);
+        }
+    }
+
     render() {
         return (
-            <div className="NeuralNetwork">
+            <div className="NeuralNetwork" onMouseUp={this.handleMouseUp} onMouseMove={this.handleMouseMove}>
                 <div className="padding" />
                 {this.state.layers.map((layer, idx) => (
                     <Layer key={`layer-${idx}`} activations={layer.activations} weights={layer.weights}
-                        biases={layer.biases} />
+                        biases={layer.biases}
+                        onNeuronMouseDown={idx === 0 ? this.handleInputMouseDown : this.handleBiasMouseDown.bind(this, idx)}
+                        onSynapseMouseDown={this.handleSynapseMouseDown.bind(this, idx)} />
                 ))}
                 <div className="padding" />
             </div>

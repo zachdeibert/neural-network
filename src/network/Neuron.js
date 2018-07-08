@@ -8,12 +8,13 @@ export default class Neuron extends React.Component {
         return (
             <div className="Neuron" style={{
                 "backgroundColor": `#${colorCode}${colorCode}${colorCode}`
-            }}>
+            }} onMouseDown={this.props.onMouseDown}>
             </div>
         );
     }
 }
 Neuron.propTypes = {
     "activation": PropTypes.number.isRequired,
-    "bias": PropTypes.number
+    "bias": PropTypes.number,
+    "onMouseDown": PropTypes.func
 };
