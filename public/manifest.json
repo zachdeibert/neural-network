@@ -3,6 +3,6 @@
     "name": "Neural Network",
     "start_url": "./index.html",
     "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#FFFFFF"
+    "theme_color": "#FFFFFF",
+    "background_color": "#1F1F1F"
 }
